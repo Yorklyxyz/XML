@@ -1,0 +1,58 @@
+//************************************************************************************
+//
+//  Summary: Move elements up in the XML.
+//  
+//
+//************************************************************************************
+
+public void MoveElementUp(XmlNode book)
+{
+    XmlNode previousNode = book.PreviousSibling;
+    while (previousNode != null && (previousNode.NodeType != XmlNodeType.Element))
+    {
+        previousNode = previousNode.PreviousSibling;
+    }
+    if (previousNode != null)
+    {
+        XmlNode newLineNode = book.NextSibling;
+        book.OwnerDocument.DocumentElement.RemoveChild(book);
+        if (newLineNode.NodeType == XmlNodeType.Whitespace | 
+            newLineNode.NodeType == XmlNodeType.SignificantWhitespace)
+        {
+            newLineNode.OwnerDocument.DocumentElement.RemoveChild(newLineNode);
+        }
+        InsertBookElement((XmlElement)book, Constants.positionAbove, 
+            previousNode, false, false);
+    }
+}
+
+
+//************************************************************************************
+//
+//  Summary: Move elements down in the XML.
+//  
+//
+//************************************************************************************
+public void MoveElementDown(XmlNode book)
+{
+    // Walk backwards until we find an element - ignore text nodes
+    XmlNode NextNode = book.NextSibling;
+    while (NextNode != null && (NextNode.NodeType != XmlNodeType.Element))
+    {
+        NextNode = NextNode.NextSibling;
+    }
+    if (NextNode != null)
+    {
+        XmlNode newLineNode = book.PreviousSibling;
+        book.OwnerDocument.DocumentElement.RemoveChild(book);
+        if (newLineNode.NodeType == XmlNodeType.Whitespace |
+            newLineNode.NodeType == XmlNodeType.SignificantWhitespace)
+        {
+            newLineNode.OwnerDocument.DocumentElement.RemoveChild(newLineNode);
+        }
+
+        InsertBookElement((XmlElement)book, Constants.positionBelow, 
+            NextNode, false, false);
+    }
+
+}
